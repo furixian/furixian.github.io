@@ -1,0 +1,3 @@
+Yetenek gerektiren çok zevkli bir atýþ oyunu. Sevimli maymunumuz elindeki okla balonlarý patlatýyor ona niþan almasýnda yardým etmeniz gerekiyor. "New Game" butonuna týklayarak oyuna baþlayabilir, farenizle atacaðýnýz yönü belirleyip, sol týklamaya basýlý tutarak okun hýzýný ayarladýktan sonra býrakýn ve balonlarý patlatýn. Seviye atlayabilmek için balonlarýn çoðunu patlatmalýsýnýz.
+
+http://www.oyunkolu.com/oyun/balon_patlatma_2-11942.htm
