@@ -1,105 +1,96 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>My Game</title>
+  <head>
+    <title>Rock Paper Scissors Game</title>
     <style>
-        canvas {
-            border: 1px solid black;
-        }
+      button {
+        font-size: 24px;
+        padding: 10px 20px;
+        margin: 10px;
+      }
+      #result {
+        font-size: 32px;
+        margin-top: 20px;
+      }
     </style>
-</head>
-<body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <script src="game.js"></script>
-</body>
+  </head>
+  <body>
+    <h1>Rock Paper Scissors Game</h1>
+    <p>Choose your weapon:</p>
+    <button id="rock">Rock</button>
+    <button id="paper">Paper</button>
+    <button id="scissors">Scissors</button>
+    <p id="result"></p>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      
+      document.getElementById("rock").addEventListener("click", function() {
+        socket.emit("weapon", "rock");
+      });
+      
+      document.getElementById("paper").addEventListener("click", function() {
+        socket.emit("weapon", "paper");
+      });
+      
+      document.getElementById("scissors").addEventListener("click", function() {
+        socket.emit("weapon", "scissors");
+      });
+      
+      socket.on("result", function(result) {
+        document.getElementById("result").innerHTML = result;
+      });
+    </script>
+  </body>
 </html>
-// Initialize the canvas
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
 
-// Set up the game variables
-let playerX = canvas.width / 2;
-let playerY = canvas.height / 2;
-let playerSpeed = 5;
-let playerSize = 20;
-let playerColor = "red";
+<script>
+var express = require("express");
+var app = express();
+var server = require("http").createServer(app);
+var io = require("socket.io")(server);
 
-let enemies = [];
+app.use(express.static(__dirname + "/public"));
 
-class EnemyTank {
-    constructor(x, y, speed, size, color, health) {
-        this.x = x;
-        this.y = y;
-        this.speed = speed;
-        this.size = size;
-        this.color = color;
-        this.health = health;
-    }
+var players = []; // array of connected players
+var weapons = ["rock", "paper", "scissors"]; // array of valid weapons
 
-    update() {
-        // Move the tank towards the player
-        let playerX, playerY = getPlayerPosition();
-        let dx = playerX - this.x;
-        let dy = playerY - this.y;
-        let dist = Math.sqrt(dx**2 + dy**2);
-        if (dist > 0) {
-            dx /= dist;
-            dy /= dist;
-        }
-        this.x += dx * this.speed;
-        this.y += dy * this.speed;
-    }
+io.on("connection", function(socket) {
+  console.log("A user connected");
+  
+  // add new player to array
+  players.push(socket.id);
+  
+  // if there are two players, start the game
+  if (players.length == 2) {
+    var player1 = players[0];
+    var player2 = players[1];
+    players = []; // reset array for next game
+    
+    console.log("Starting game between " + player1 + " and " + player2);
+    
+    // emit message to both players to choose a weapon
+    io.to(player1).emit("message", "Choose your weapon.");
+    io.to(player2).emit("message", "Choose your weapon.");
+    
+    // listen for weapons from both players
+    socket.on("weapon", function(weapon) {
+      // validate weapon
+      if (weapons.indexOf(weapon) == -1) {
+        socket.emit("message", "Invalid weapon. Please choose again.");
+      } else {
+        socket.weapon = weapon;
+        
+        // if both players have chosen a weapon, determine the winner
+        if (io.sockets.adapter.rooms[player1] && io.sockets.adapter.rooms[player2]) {
+          var player1Weapon = io.sockets.connected[player1].weapon;
+          var player2Weapon = io.sockets.connected[player2].weapon;
+          
+          if (player1Weapon == player2Weapon) {
+            io.to(player1).emit("result", "Tie!");
+            io.to(player2).emit("result", "Tie!");
+          } else if ((player1Weapon == "rock" && player2Weapon == "scissors") ||
+                     (player1Weapon == "paper" && player2Weapon == "rock") ||
+                     (player1Weapon == "sc
 
-    draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.closePath();
-    }
-}
-
-function spawnEnemyTank() {
-    let x = Math.random() * canvas.width;
-    let y = Math.random() * canvas.height;
-    let speed = 3;
-    let size = 30;
-    let color = "green";
-    let health = 50;
-    let enemyTank = new EnemyTank(x, y, speed, size, color, health);
-    enemies.push(enemyTank);
-}
-
-function getPlayerPosition() {
-    return [playerX, playerY];
-}
-
-function update() {
-    // Handle player movement
-    if (keys[38]) {
-        playerY -= playerSpeed;
-    }
-    if (keys[40]) {
-        playerY += playerSpeed;
-    }
-    if (keys[37]) {
-        playerX -= playerSpeed;
-    }
-    if (keys[39]) {
-        playerX += playerSpeed;
-    }
-
-    // Spawn enemies
-    if (enemies.length < 10) {
-        spawnEnemyTank();
-    }
-
-    // Update and draw enemies
-    for (let i = 0; i < enemies.length; i++) {
-        enemies[i].update();
-        enemies[i].draw();
-    }
-
-    // Draw player
-    ctx.beginPath();
-    ctx.arc(player
