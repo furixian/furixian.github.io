@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Matching Game</title>
+    <title>Matching Game - Level 1</title>
     <style>
       body {
         background-color: blue;
@@ -30,18 +30,22 @@
     </style>
   </head>
   <body>
-    <h1>Matching Game</h1>
+    <h1>Matching Game - Level 1</h1>
     <div id="game">
-      <div class="card" data-value="A">A</div>
-      <div class="card" data-value="B">B</div>
-      <div class="card" data-value="C">C</div>
-      <div class="card" data-value="D">D</div>
-      <div class="card" data-value="A">A</div>
-      <div class="card" data-value="B">B</div>
-      <div class="card" data-value="C">C</div>
-      <div class="card" data-value="D">D</div>
+      <div class="card" data-value="мама">мама</div>
+      <div class="card" data-value="папа">папа</div>
+      <div class="card" data-value="брат">брат</div>
+      <div class="card" data-value="сестра">сестра</div>
+      <div class="card" data-value="мама">мама</div>
+      <div class="card" data-value="папа">папа</div>
+      <div class="card" data-value="брат">брат</div>
+      <div class="card" data-value="сестра">сестра</div>
     </div>
+    <button id="next-level" style="display: none;">Next Level</button>
     <script>
+      // Russian words to teach in level 1
+      const words = ['мама', 'папа', 'брат', 'сестра'];
+
       // Get all the cards
       const cards = document.querySelectorAll('.card');
 
@@ -82,8 +86,8 @@
         secondCard.classList.add('matched');
 
         if (document.querySelectorAll('.card:not(.matched)').length === 0) {
-          // All cards are matched, send the user to YouTube
-          window.location = "https://www.youtube.com";
+          // All cards are matched, go to the next level
+          document.getElementById('next-level').style.display = 'block';
         }
 
         resetBoard();
@@ -101,19 +105,4 @@
       }
 
       function resetBoard() {
-        [hasFlippedCard, lockBoard] = [false, false];
-        [firstCard, secondCard] = [null, null];
-      }
-
-      // Shuffle the cards
-      (function shuffle() {
-        cards.forEach(card => {
-          let randomPos = Math.floor(Math.random() * 8);
-          card.style.order = randomPos;
-        });
-      })();
-
-      cards.forEach(card => card.addEventListener('click', flipCard));
-    </script>
-  </body>
-</html>
+        [hasFlippedCard, lockBoard] =
