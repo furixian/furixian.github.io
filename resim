@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Move Image on Mouse Move</title>
+	<style>
+		/* Set the background image */
+		body {
+			background-image: url('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.Otviu-ny2jG69VSVxHcfqgHaD4%26pid%3DApi&f=1&ipt=70d77d9cb80e6f3df1776813831e02d067af82e08482fc318cf99e4d22f6c565&ipo=images');
+			background-size: cover;
+		}
+		/* Set the position of the image */
+		img {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+	</style>
+</head>
+<body>
+	<img id="moving-image" src="https://via.placeholder.com/150" width="150" height="150">
+	<script>
+		// Get the image element
+		var image = document.getElementById("moving-image");
+
+		// Add a listener for mouse movements
+		document.addEventListener("mousemove", function(event) {
+			// Get the position of the mouse relative to the center of the screen
+			var x = event.clientX - window.innerWidth / 2;
+			var y = event.clientY - window.innerHeight / 2;
+
+			// Set the position of the image to be the opposite of the mouse position
+			image.style.transform = "translate(" + (-x / 10) + "px, " + (-y / 10) + "px)";
+		});
+	</script>
+</body>
+</html>
