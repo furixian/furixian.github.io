@@ -1,1 +1,108 @@
-<!DOCTYPE html><html><head><title>Rock Paper Scissors Game</title><style>button {font-size: 24px;padding: 10px 20px;margin: 10px;}#result {font-size: 32px;margin-top: 20px;}</style></head><body><h1>Rock Paper Scissors Game</h1><p>Choose your weapon:</p><button id="rock">Rock</button><button id="paper">Paper</button><button id="scissors">Scissors</button><p id="result"></p><script src="/socket.io/socket.io.js"></script><script>var socket = io();document.getElementById("rock").addEventListener("click", function() {socket.emit("weapon", "rock");});document.getElementById("paper").addEventListener("click", function() {socket.emit("weapon", "paper");});document.getElementById("scissors").addEventListener("click", function() {socket.emit("weapon", "scissors");});socket.on("result", function(result) {document.getElementById("result").innerHTML = result;});</script></body></html><script>var express = require("express");var app = express();var server = require("http").createServer(app);var io = require("socket.io")(server);app.use(express.static(__dirname + "/public"));var players = [];var weapons = ["rock", "paper", "scissors"];io.on("connection", function(socket) {console.log("A user connected");players.push(socket.id);if (players.length == 2) {var player1 = players[0];var player2 = players[1];players = [];io.to(player1).emit("message", "Choose your weapon.");io.to(player2).emit("message", "Choose your weapon.");socket.on("weapon", function(weapon) {if (weapons.indexOf(weapon) == -1) {socket.emit("message", "Invalid weapon. Please choose again.");} else {socket.weapon = weapon;if (io.sockets.adapter.rooms[player1] && io.sockets.adapter.rooms[player2]) {var player1Weapon = io.sockets.connected[player1].weapon;var player2Weapon = io.sockets.connected[player2].weapon;if (player1Weapon == player2Weapon) {io.to(player1).emit("result", "Tie!");io.to(player2).emit("result", "Tie!");} else if ((player1Weapon == "rock" && player2Weapon == "scissors") ||(player1Weapon == "paper" && player2Weapon == "rock") ||(player1Weapon == "scissors" && player2Weapon == "paper")) {io.to(player1).emit("result", "You win!");io.to(player2).emit("result", "You lose!");} else {io.to(player1).emit("result", "You lose!");io.to(player2).emit("result", "You win!");}}}});}});server.listen(3000, function() {console.log("Server started on port 3000");});</script>```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Matching Game</title>
+    <style>
+      /* Style the cards */
+      .card {
+        border: 1px solid #ccc;
+        width: 100px;
+        height: 100px;
+        display: inline-block;
+        margin: 10px;
+        text-align: center;
+        font-size: 50px;
+        line-height: 100px;
+        cursor: pointer;
+      }
+      
+      /* Style the matched cards */
+      .matched {
+        background-color: green;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Matching Game</h1>
+    <div id="game">
+      <div class="card" data-value="A">A</div>
+      <div class="card" data-value="B">B</div>
+      <div class="card" data-value="C">C</div>
+      <div class="card" data-value="D">D</div>
+      <div class="card" data-value="A">A</div>
+      <div class="card" data-value="B">B</div>
+      <div class="card" data-value="C">C</div>
+      <div class="card" data-value="D">D</div>
+    </div>
+    <script>
+      // Get all the cards
+      const cards = document.querySelectorAll('.card');
+
+      let hasFlippedCard = false;
+      let lockBoard = false;
+      let firstCard, secondCard;
+
+      function flipCard() {
+        if (lockBoard) return;
+        if (this === firstCard) return;
+
+        this.classList.add('flip');
+
+        if (!hasFlippedCard) {
+          // first click
+          hasFlippedCard = true;
+          firstCard = this;
+          return;
+        }
+
+        // second click
+        secondCard = this;
+
+        checkForMatch();
+      }
+
+      function checkForMatch() {
+        let isMatch = firstCard.dataset.value === secondCard.dataset.value;
+
+        isMatch ? disableCards() : unflipCards();
+      }
+
+      function disableCards() {
+        firstCard.removeEventListener('click', flipCard);
+        secondCard.removeEventListener('click', flipCard);
+
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
+
+        resetBoard();
+      }
+
+      function unflipCards() {
+        lockBoard = true;
+
+        setTimeout(() => {
+          firstCard.classList.remove('flip');
+          secondCard.classList.remove('flip');
+
+          resetBoard();
+        }, 1000);
+      }
+
+      function resetBoard() {
+        [hasFlippedCard, lockBoard] = [false, false];
+        [firstCard, secondCard] = [null, null];
+      }
+
+      // Shuffle the cards
+      (function shuffle() {
+        cards.forEach(card => {
+          let randomPos = Math.floor(Math.random() * 8);
+          card.style.order = randomPos;
+        });
+      })();
+
+      cards.forEach(card => card.addEventListener('click', flipCard));
+    </script>
+  </body>
+</html>
