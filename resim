@@ -25,13 +25,3 @@
 
 		// Add a listener for mouse movements
 		document.addEventListener("mousemove", function(event) {
-			// Get the position of the mouse relative to the center of the screen
-			var x = event.clientX - window.innerWidth / 2;
-			var y = event.clientY - window.innerHeight / 2;
-
-			// Set the position of the image to be the opposite of the mouse position
-			image.style.transform = "translate(" + (-x / 10) + "px, " + (-y / 10) + "px)";
-		});
-	</script>
-</body>
-</html>
