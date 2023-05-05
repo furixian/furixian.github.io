@@ -3,6 +3,11 @@
   <head>
     <title>Matching Game</title>
     <style>
+      body {
+        background-color: blue;
+        color: black;
+      }
+
       /* Style the cards */
       .card {
         border: 1px solid #ccc;
@@ -14,6 +19,7 @@
         font-size: 50px;
         line-height: 100px;
         cursor: pointer;
+        background-color: white;
       }
       
       /* Style the matched cards */
@@ -74,6 +80,11 @@
 
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
+
+        if (document.querySelectorAll('.card:not(.matched)').length === 0) {
+          // All cards are matched, send the user to YouTube
+          window.location = "https://www.youtube.com";
+        }
 
         resetBoard();
       }
