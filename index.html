@@ -11,12 +11,12 @@
       /* Style the cards */
       .card {
         border: 1px solid #ccc;
-        width: 100px;
+        width: 200px;
         height: 100px;
         display: inline-block;
         margin: 10px;
         text-align: center;
-        font-size: 50px;
+        font-size: 30px;
         line-height: 100px;
         cursor: pointer;
         background-color: white;
@@ -32,19 +32,27 @@
   <body>
     <h1>Matching Game - Level 1</h1>
     <div id="game">
-      <div class="card" data-value="мама">мама</div>
-      <div class="card" data-value="папа">папа</div>
-      <div class="card" data-value="брат">брат</div>
-      <div class="card" data-value="сестра">сестра</div>
-      <div class="card" data-value="мама">мама</div>
-      <div class="card" data-value="папа">папа</div>
-      <div class="card" data-value="брат">брат</div>
-      <div class="card" data-value="сестра">сестра</div>
+      <div class="card" data-value="mother">Mother<br>(мама)</div>
+      <div class="card" data-value="father">Father<br>(папа)</div>
+      <div class="card" data-value="brother">Brother<br>(брат)</div>
+      <div class="card" data-value="sister">Sister<br>(сестра)</div>
+      <div class="card" data-value="mother">Mother<br>(мама)</div>
+      <div class="card" data-value="father">Father<br>(папа)</div>
+      <div class="card" data-value="brother">Brother<br>(брат)</div>
+      <div class="card" data-value="sister">Sister<br>(сестра)</div>
     </div>
     <button id="next-level" style="display: none;">Next Level</button>
     <script>
-      // Russian words to teach in level 1
-      const words = ['мама', 'папа', 'брат', 'сестра'];
+      // English words to teach in level 1
+      const words = ['mother', 'father', 'brother', 'sister'];
+
+      // Russian translations of the English words
+      const translations = {
+        'mother': 'мама',
+        'father': 'папа',
+        'brother': 'брат',
+        'sister': 'сестра',
+      };
 
       // Get all the cards
       const cards = document.querySelectorAll('.card');
@@ -88,21 +96,3 @@
         if (document.querySelectorAll('.card:not(.matched)').length === 0) {
           // All cards are matched, go to the next level
           document.getElementById('next-level').style.display = 'block';
-        }
-
-        resetBoard();
-      }
-
-      function unflipCards() {
-        lockBoard = true;
-
-        setTimeout(() => {
-          firstCard.classList.remove('flip');
-          secondCard.classList.remove('flip');
-
-          resetBoard();
-        }, 1000);
-      }
-
-      function resetBoard() {
-        [hasFlippedCard, lockBoard] =
