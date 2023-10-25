@@ -34,11 +34,7 @@ if ($_FILES["fileToUpload"]["size"] > 500000) {
     $uploadOk = 0;
 }
 
-// Allow certain file formats
-if($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg"
-&& $fileType != "gif" && $fileType != "txt" && $fileType != "pdf" && $fileType != "docx" && $fileType != "xlsx") {
-    echo "Sorry, only JPG, JPEG, PNG, GIF, TXT, PDF, DOCX, and XLSX files are allowed.";
-    $uploadOk = 0;
+
 }
 
 // Check if $uploadOk is set to 0 by an error
